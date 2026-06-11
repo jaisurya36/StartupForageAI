@@ -1,37 +1,215 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>StartupForge AI</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StartupForge AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="container">
+<!-- 3D Canvas Background -->
+<canvas id="bgCanvas"></canvas>
 
-    <h1>🚀 StartupForge AI</h1>
+<!-- Particle field -->
+<div id="particles"></div>
 
-    <p>
-        AI-Powered Startup Blueprint Generator
-    </p>
+<!-- Noise overlay -->
+<div class="noise"></div>
 
-    <textarea
-        id="idea"
-        placeholder="Describe your startup idea..."
-    ></textarea>
-
-    <br><br>
-
-    <button onclick="generateBlueprint()">
-        Generate Blueprint
+<!-- ===== MENU ===== -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    <span>StartupForge</span>
+    <span class="nav-badge">AI</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="toggleDarkMode()" title="Toggle theme">
+      <span id="themeIcon">☀️</span>
     </button>
+    <button class="nav-btn" onclick="showAbout()">About</button>
+    <button class="nav-btn" onclick="showCreator()">Creator</button>
+    <div class="nav-version">v1.0</div>
+  </div>
+</nav>
 
-    <div id="result"></div>
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span class="pulse-dot"></span>
+    AI-Powered · Real-Time · Instant Blueprint
+  </div>
 
+  <h1 class="hero-title">
+    <span class="title-line" data-text="Build Your">Build Your</span>
+    <span class="title-line gradient-text" data-text="Startup Empire">Startup Empire</span>
+  </h1>
+
+  <p class="hero-sub">From idea to investor-ready blueprint in seconds. Powered by advanced AI agents working in parallel.</p>
+
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-n">10K+</span><span class="stat-l">Blueprints</span></div>
+    <div class="stat-div"></div>
+    <div class="stat"><span class="stat-n">98%</span><span class="stat-l">Accuracy</span></div>
+    <div class="stat-div"></div>
+    <div class="stat"><span class="stat-n">&lt;30s</span><span class="stat-l">Generation</span></div>
+  </div>
+</section>
+
+<!-- ===== MAIN CARD ===== -->
+<div class="forge-card">
+  <div class="forge-card-inner">
+
+    <!-- Input -->
+    <div class="input-wrap">
+      <div class="input-label">Your Startup Idea</div>
+      <div class="textarea-shell">
+        <textarea id="idea" placeholder="Describe your startup idea in detail... e.g. An AI platform that helps remote teams reduce meeting fatigue using async video + smart summaries"></textarea>
+        <div class="char-count" id="charCount">0 / 500</div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="actions">
+      <button class="btn-forge" onclick="generateBlueprint()">
+        <span class="btn-forge-bg"></span>
+        <span class="btn-forge-content">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Generate Blueprint
+        </span>
+      </button>
+      <button class="btn-names" onclick="generateNames()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Name Generator
+      </button>
+    </div>
+
+    <!-- Analytics strip -->
+    <div id="analytics-dashboard"></div>
+
+    <!-- Tab bar -->
+    <div class="tabbar" id="tabBar" style="display:none">
+      <button class="tabpill active" onclick="showTab('blueprint',this)" data-tab="blueprint">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Blueprint
+      </button>
+      <button class="tabpill" onclick="showTab('swot',this)" data-tab="swot">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+        SWOT
+      </button>
+      <button class="tabpill" onclick="showTab('pitch',this)" data-tab="pitch">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 003 3V1h-3z"/><path d="M19 1v6a7 7 0 01-14 0V1"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        Pitch
+      </button>
+      <button class="tabpill" onclick="showTab('mvp',this)" data-tab="mvp">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        MVP
+      </button>
+      <button class="tabpill" onclick="showTab('competitors',this)" data-tab="competitors">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+        Competitors
+      </button>
+    </div>
+
+    <!-- Tab content panels -->
+    <div id="result">
+      <div id="blueprint" class="tab-panel"></div>
+      <div id="swot" class="tab-panel" style="display:none"></div>
+      <div id="pitch" class="tab-panel" style="display:none"></div>
+      <div id="mvp" class="tab-panel" style="display:none"></div>
+      <div id="competitors" class="tab-panel" style="display:none"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== CHATBOT BUBBLE ===== -->
+<div id="chatbotBtn" onclick="toggleChatbot()">
+  <div class="chat-bubble-ring"></div>
+  <div class="chat-bubble-icon">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+    </svg>
+  </div>
+  <div class="chat-notif"></div>
+  <div class="chat-bubble-tooltip">👋 Ask me anything, Founder!</div>
+</div>
+
+<!-- ===== CHAT WINDOW ===== -->
+<div id="chatbot-window">
+  <div class="cw-header">
+    <div class="cw-header-left">
+      <div class="cw-avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+      <div>
+        <div class="cw-name">Forge Assistant</div>
+        <div class="cw-status"><span class="online-dot"></span>Online</div>
+      </div>
+    </div>
+    <button class="cw-close" onclick="closeChatbot()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div id="chat-messages">
+    <div class="cmsg bot">
+      <div class="cmsg-bubble">Hey Founder! 🚀 Ready to forge your startup vision into reality?</div>
+    </div>
+  </div>
+
+  <div class="cw-input-bar">
+    <input type="text" id="chat-input" placeholder="Ask anything about startups..." onkeydown="if(event.key==='Enter')sendMessage()">
+    <button class="cw-send" onclick="sendMessage()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ===== CREATOR POPUP ===== -->
+<div id="creatorPopup" class="modal-overlay" onclick="if(event.target===this)closeCreator()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCreator()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-avatar">SJ</div>
+    <h2 class="modal-title">Creator</h2>
+    <div class="modal-meta">
+      <div class="meta-row"><span class="meta-k">Name</span><span class="meta-v">Surya Jai</span></div>
+      <div class="meta-row"><span class="meta-k">Degree</span><span class="meta-v">B.Tech Information Technology</span></div>
+      <div class="meta-row"><span class="meta-k">Project</span><span class="meta-v">StartupForge AI</span></div>
+    </div>
+    <p class="modal-desc">AI-powered startup blueprint platform for founders and entrepreneurs worldwide.</p>
+  </div>
+</div>
+
+<!-- ===== ABOUT POPUP ===== -->
+<div id="aboutPopup" class="modal-overlay" onclick="if(event.target===this)closeAbout()">
+  <div class="modal modal-wide">
+    <button class="modal-close" onclick="closeAbout()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-icon">🚀</div>
+    <h2 class="modal-title">About StartupForge AI</h2>
+    <p class="modal-desc">The ultimate AI-powered launchpad for the next generation of founders.</p>
+    <div class="features-grid">
+      <div class="feat"><div class="feat-icon">⚡</div><div>Blueprint Generator</div></div>
+      <div class="feat"><div class="feat-icon">📊</div><div>SWOT Analysis</div></div>
+      <div class="feat"><div class="feat-icon">🎤</div><div>Pitch Generator</div></div>
+      <div class="feat"><div class="feat-icon">🛠</div><div>MVP Planner</div></div>
+      <div class="feat"><div class="feat-icon">🏢</div><div>Competitor Intel</div></div>
+      <div class="feat"><div class="feat-icon">🏷</div><div>Name Generator</div></div>
+      <div class="feat"><div class="feat-icon">🤖</div><div>AI Assistant</div></div>
+      <div class="feat"><div class="feat-icon">📄</div><div>PDF Export</div></div>
+    </div>
+    <div class="modal-version">Version 1.0 · MIT License</div>
+  </div>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>

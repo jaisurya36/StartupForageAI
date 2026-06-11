@@ -11,42 +11,97 @@ Startup Idea:
 
 Generate a professional startup blueprint.
 
-FORMAT:
+FORMAT STRICTLY AS:
 
-# Idea Analysis
-- Domain
-- Problem Statement
-- Target Users
-- Unique Value Proposition
+IDEA ANALYSIS
 
-# Market Analysis
-- Market Demand
-- Market Size
-- Competitors
-- Opportunities
-- Risks
+Domain:
+<content>
 
-# Business Model
-- Revenue Streams
-- Pricing Strategy
-- Customer Acquisition Strategy
+Problem Statement:
+<content>
 
-# Product Roadmap
-Phase 1 - Research
-Phase 2 - MVP Development
-Phase 3 - Testing
-Phase 4 - Launch
-Phase 5 - Scaling
+Target Users:
+<content>
 
-# Startup Readiness Score
-Give score out of 100.
+Unique Value Proposition:
+<content>
 
-Explain:
-- Strengths
-- Weaknesses
-- Improvements Needed
+--------------------------------------------------
 
-Provide detailed professional output.
+MARKET ANALYSIS
+
+Market Demand:
+<content>
+
+Market Size:
+<content>
+
+Competitors:
+<content>
+
+Opportunities:
+<content>
+
+Risks:
+<content>
+
+--------------------------------------------------
+
+BUSINESS MODEL
+
+Revenue Streams:
+<content>
+
+Pricing Strategy:
+<content>
+
+Customer Acquisition:
+<content>
+
+--------------------------------------------------
+
+PRODUCT ROADMAP
+
+Phase 1:
+<content>
+
+Phase 2:
+<content>
+
+Phase 3:
+<content>
+
+Phase 4:
+<content>
+
+Phase 5:
+<content>
+
+--------------------------------------------------
+
+STARTUP READINESS SCORE
+
+Score:
+XX/100
+
+Strengths:
+<content>
+
+Weaknesses:
+<content>
+
+Improvements Needed:
+<content>
+
+Do NOT use:
+#
+##
+###
+****
+Markdown
+
+Return professional report format only.
 """
     
     return generate_text(prompt)
